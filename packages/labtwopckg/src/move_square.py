@@ -51,7 +51,7 @@ class Listener:
 if __name__ == '__main__':
     try:
         rospy.init_node('move_square', anonymous=True)
-        t = Talker()
+        l = Listener()
     except rospy.ROSInterruptException:
         pass
 
