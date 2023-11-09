@@ -8,7 +8,7 @@ from duckietown_msgs.msg import FSMState
 
 class Talker:
     def __init__(self):
-        self.pub = rospy.Publisher('joy_mapper_node/car_cmd', Twist2DStamped, queue_size=1)
+        self.pub = rospy.Publisher('lane_controller_node/car_cmd', Twist2DStamped, queue_size=1)
     
     def talk(self, msg):
         self.pub.publish(msg)
