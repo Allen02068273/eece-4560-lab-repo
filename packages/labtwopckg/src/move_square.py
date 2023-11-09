@@ -21,7 +21,7 @@ class Listener:
     
     def callback(self, msg):
         # check message for a mode switch
-        if not msg.state is "LANE_FOLLOWING":
+        if not msg.state == "LANE_FOLLOWING":
             return
         # move in a square
         rate = rospy.Rate(1) # 1hz
