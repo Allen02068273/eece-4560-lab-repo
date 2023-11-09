@@ -27,7 +27,7 @@ class Listener:
         rate = rospy.Rate(1) # 1hz
         move_cmd = Twist2DStamped()
         move_cmd.omega = 0
-        while (true):
+        while True:
             # forward 1 meter
             move_cmd.v = 1
             self.t.talk(move_cmd)
