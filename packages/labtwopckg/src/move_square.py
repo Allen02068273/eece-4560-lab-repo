@@ -17,27 +17,27 @@ class Talker:
 class Listener:
     def __init__(self):
         rospy.Subscriber('fsm_node/mode', FSMState, self.callback)
-        roslog.warn('subscribed')
+        rospy.logwarn('subscribed')
         self.t = Talker()
-        roslog.warn('publisher set up')
+        rospy.logwarn('publisher set up')
     
     def callback(self, msg):
-        roslog.warn('callback started')
+        rospy.logwarn('callback started')
         # check message for a mode switch
         if not msg.state == 'LANE_FOLLOWING':
-            roslog.warn('LANE_FOLLOWING state not detected')
+            rospy.logwarn('LANE_FOLLOWING state not detected')
             return
-        roslog.warn('LANE_FOLLOWING state detected')
+        rospy.logwarn('LANE_FOLLOWING state detected')
         # move in a square
         rate = rospy.Rate(1) # 1hz
         move_cmd = Twist2DStamped()
         move_cmd.omega = 0
         while True:
-            roslog.warn('loop started')
+            rospy.logwarn('loop started')
             # forward 1 meter
             move_cmd.v = 1
             self.t.talk(move_cmd)
-            roslog.warn('published move forward')
+            rospy.logwarn('published move forward')
             rate.sleep()
             # wait 5 seconds
             move_cmd.v = 0
@@ -56,10 +56,10 @@ class Listener:
 
 
 if __name__ == '__main__':
-    roslog.warn('program started')
+    rospy.logwarn('program started')
     try:
         rospy.init_node('move_square', anonymous=True)
-        roslog.warn('node started')
+        rospy.logwarn('node started')
         l = Listener()
     except rospy.ROSInterruptException:
         pass
