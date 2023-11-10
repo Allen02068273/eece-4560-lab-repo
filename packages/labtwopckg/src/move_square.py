@@ -62,6 +62,8 @@ if __name__ == '__main__':
         rospy.logwarn('node started')
         l = Listener()
         rospy.spin()
+        rospy.logwarn('after spin')
     except rospy.ROSInterruptException:
         pass
+    rospy.logwarn('after try/except')
 
