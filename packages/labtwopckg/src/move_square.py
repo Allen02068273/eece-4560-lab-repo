@@ -61,6 +61,7 @@ if __name__ == '__main__':
         rospy.init_node('move_square', anonymous=True)
         rospy.logwarn('node started')
         l = Listener()
+        rospy.spin()
     except rospy.ROSInterruptException:
         pass
 
