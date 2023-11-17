@@ -18,18 +18,22 @@ class Listener:
     def __init__(self):
         rospy.Subscriber('fsm_node/mode', FSMState, self.callback)
         self.t = Talker()
+        self.running = False
     
     def callback(self, msg):
         # check message for a mode switch
         if not msg.state == 'LANE_FOLLOWING':
             return
+        if running:
+            return
+        self.running = True
         # move in a square
         rate = rospy.Rate(1) # 1hz
         move_cmd = Twist2DStamped()
         move_cmd.omega = 0
         while True:
             # forward 1 meter
-            move_cmd.v = 1
+            move_cmd.v = rospy.get_param('velocity')
             self.t.talk(move_cmd)
             rate.sleep()
             # wait 5 seconds
@@ -38,7 +42,7 @@ class Listener:
             for i in range(5):
                 rate.sleep()
             # turn 90 degrees
-            move_cmd.omega = 1
+            move_cmd.omega = rospy.get_param('omega')
             self.t.talk(move_cmd)
             rate.sleep()
             # wait 5 seconds
@@ -51,6 +55,8 @@ class Listener:
 if __name__ == '__main__':
     try:
         rospy.init_node('move_square', anonymous=True)
+        rospy.set_param('velocity', 1)
+        rospy.set_param('omega', 1)
         l = Listener()
         rospy.spin()
     except rospy.ROSInterruptException:
