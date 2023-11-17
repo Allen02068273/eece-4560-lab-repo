@@ -46,7 +46,6 @@ class Listener:
             move_cmd.omega = rospy.get_param('omega')
             self.t.talk(move_cmd)
             rate.sleep()
-            rate.sleep()
             # wait 5 seconds
             move_cmd.omega = 0
             self.t.talk(move_cmd)
