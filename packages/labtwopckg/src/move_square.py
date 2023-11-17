@@ -36,6 +36,7 @@ class Listener:
             move_cmd.v = rospy.get_param('velocity')
             self.t.talk(move_cmd)
             rate.sleep()
+            rate.sleep()
             # wait 5 seconds
             move_cmd.v = 0
             self.t.talk(move_cmd)
@@ -44,6 +45,7 @@ class Listener:
             # turn 90 degrees
             move_cmd.omega = rospy.get_param('omega')
             self.t.talk(move_cmd)
+            rate.sleep()
             rate.sleep()
             # wait 5 seconds
             move_cmd.omega = 0
