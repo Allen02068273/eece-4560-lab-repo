@@ -24,7 +24,7 @@ class Listener:
         # check message for a mode switch
         if not msg.state == 'LANE_FOLLOWING':
             return
-        if running:
+        if self.running:
             return
         self.running = True
         # move in a square
