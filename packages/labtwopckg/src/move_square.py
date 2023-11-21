@@ -33,6 +33,7 @@ class Listener:
         move_cmd.omega = 0
         #while True:
         for i in range(4):
+            rospy.logwarn(i)
             # forward 1 meter
             move_cmd.v = rospy.get_param('velocity')
             move_cmd.omega = rospy.get_param('lean')
@@ -44,7 +45,7 @@ class Listener:
             move_cmd.v = 0
             move_cmd.omega = 0
             self.t.talk(move_cmd)
-            for i in range(5):
+            for j in range(5):
                 rate.sleep()
             # turn 90 degrees
             move_cmd.omega = rospy.get_param('omega')
@@ -53,7 +54,7 @@ class Listener:
             # wait 5 seconds
             move_cmd.omega = 0
             self.t.talk(move_cmd)
-            for i in range(5):
+            for j in range(5):
                 rate.sleep()
         self.running = False
 
@@ -61,9 +62,9 @@ class Listener:
 if __name__ == '__main__':
     try:
         rospy.init_node('move_square', anonymous=True)
-        rospy.set_param('velocity', 0.3)
-        rospy.set_param('omega', 0.8)
-        rospy.set_param('lean', 0.05)
+        rospy.set_param('velocity', 0.33)
+        rospy.set_param('omega', 0.7)
+        rospy.set_param('lean', 0.02)
         l = Listener()
         rospy.spin()
     except rospy.ROSInterruptException:
