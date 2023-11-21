@@ -56,15 +56,14 @@ class Listener:
             self.t.talk(move_cmd)
             for j in range(5):
                 rate.sleep()
-        self.running = False
 
 
 if __name__ == '__main__':
     try:
         rospy.init_node('move_square', anonymous=True)
-        rospy.set_param('velocity', 0.33)
+        rospy.set_param('velocity', 0.35)
         rospy.set_param('omega', 0.7)
-        rospy.set_param('lean', 0.02)
+        rospy.set_param('lean', -0.1)
         l = Listener()
         rospy.spin()
     except rospy.ROSInterruptException:
