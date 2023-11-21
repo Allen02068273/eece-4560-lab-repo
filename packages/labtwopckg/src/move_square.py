@@ -31,7 +31,8 @@ class Listener:
         rate = rospy.Rate(1) # 1hz
         move_cmd = Twist2DStamped()
         move_cmd.omega = 0
-        while True:
+        #while True:
+        for i in range(4):
             # forward 1 meter
             move_cmd.v = rospy.get_param('velocity')
             move_cmd.omega = rospy.get_param('lean')
@@ -54,14 +55,15 @@ class Listener:
             self.t.talk(move_cmd)
             for i in range(5):
                 rate.sleep()
+        self.running = False
 
 
 if __name__ == '__main__':
     try:
         rospy.init_node('move_square', anonymous=True)
         rospy.set_param('velocity', 0.3)
-        rospy.set_param('omega', 1)
-        rospy.set_param('lean', 0.2)
+        rospy.set_param('omega', 0.8)
+        rospy.set_param('lean', 0.05)
         l = Listener()
         rospy.spin()
     except rospy.ROSInterruptException:
