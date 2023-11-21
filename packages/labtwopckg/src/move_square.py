@@ -32,7 +32,7 @@ class Listener:
         move_cmd = Twist2DStamped()
         move_cmd.omega = 0
         #while True:
-        for i in range(4):
+        for _ in range(4):
             # forward 1 meter
             move_cmd.v = rospy.get_param('velocity')
             move_cmd.omega = rospy.get_param('lean')
