@@ -59,9 +59,9 @@ class Listener:
 if __name__ == '__main__':
     try:
         rospy.init_node('move_square', anonymous=True)
-        rospy.set_param('velocity', 0.2)
+        rospy.set_param('velocity', 0.3)
         rospy.set_param('omega', 1)
-        rospy.set_param('lean', 0)
+        rospy.set_param('lean', 0.2)
         l = Listener()
         rospy.spin()
     except rospy.ROSInterruptException:
