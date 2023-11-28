@@ -63,7 +63,7 @@ if __name__ == '__main__':
         rospy.init_node('move_square', anonymous=True)
         rospy.set_param('velocity', 0.35)
         rospy.set_param('omega', 0.7)
-        rospy.set_param('lean', -0.1)
+        rospy.set_param('lean', 0.02) # slight turn on forward movement
         l = Listener()
         rospy.spin()
     except rospy.ROSInterruptException:
