@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="rqt_image_view" type="rqt_image_view" name="image_view_hough_lines_white" args="/image_lines_white"/>
+  <node pkg="rqt_image_view" type="rqt_image_view" name="image_view_hough_lines_yellow" args="/image_lines_yellow"/>
+  <node pkg="homework_07" name="lane_finder" type="lane_finder.py"/>
+  <node pkg="image_processing_hw" name="image_publisher" type="image_pub_all.py"/>
+</launch>
