@@ -5,6 +5,7 @@ import sys
 import rospy
 import cv2
 import numpy as np
+from sensor_msgs.msg import Image
 from sensor_msgs.msg import CompressedImage
 from cv_bridge import CvBridge
 
@@ -13,7 +14,7 @@ class LaneFinder:
     def __init__(self):
         # Instatiate the converter class once by using a class member
         self.bridge = CvBridge()
-        rospy.Subscriber("camera_node/image/compressed", CompressedImage, self.lanefilter_cb, queue_size=1, buff_size=2**24)
+        rospy.Subscriber("camera_node/image/compressed", CompressedImage, self.processor_cb, queue_size=1, buff_size=2**24)
         self.pub_white = rospy.Publisher("/lane_lines_white", Image, queue_size=10)
         self.pub_yellow = rospy.Publisher("/lane_lines_yellow", Image, queue_size=10)
     
@@ -33,7 +34,7 @@ class LaneFinder:
         
         # filter image into white and yellow
         img_white = cv2.inRange(img_hsv, (0, 0, 200), (255, 50, 255))
-        img_yellow = cv2.inRange(img_hsv, (25, 150, 100), (35, 255, 255))
+        img_yellow = cv2.inRange(img_hsv, (25, 100, 100), (35, 255, 255))
         
         # apply Canny edge detection
         low = 50
