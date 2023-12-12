@@ -14,8 +14,8 @@ class LaneFinder:
         # Instatiate the converter class once by using a class member
         self.bridge = CvBridge()
         rospy.Subscriber("camera_node/image/compressed", CompressedImage, self.lanefilter_cb, queue_size=1, buff_size=2**24)
-        self.pub_white = rospy.Publisher("image_lines_white", Image, queue_size=10)
-        self.pub_yellow = rospy.Publisher("image_lines_yellow", Image, queue_size=10)
+        self.pub_white = rospy.Publisher("/lane_lines_white", Image, queue_size=10)
+        self.pub_yellow = rospy.Publisher("/lane_lines_yellow", Image, queue_size=10)
     
     def processor_cb(self, msg):
         # convert to a ROS image using the bridge
