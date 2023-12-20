@@ -3,7 +3,6 @@
 
 import rospy
 from duckietown_msgs.msg import Twist2DStamped
-from duckietown_msgs.msg import FSMState
 from duckietown_msgs.msg import AprilTagDetectionArray
 
 
@@ -19,7 +18,6 @@ class PIDController:
     
     def get_accel(self, error):
         if (self.initialize):
-            self.timestamp = rospy.get_time()
             self.pre_error = error
             self.initialize = False
         
@@ -29,13 +27,20 @@ class PIDController:
         p = self.kp * error
         i = self.ki * self.sum
         d = 0
-        if (delta_time != 0):
+        if (self.timestamp != 0):
             d = self.kd * (delta_error / delta_time)
         
         self.timestamp = rospy.get_time()
         self.pre_error = error
         
         return p + i + d
+    
+    def reset(self):
+        self.sum = 0
+        self.initialize = True
+        self.timestamp = 0
+        self.pre_error = 0
+
 
 
 class Talker:
@@ -48,29 +53,21 @@ class Talker:
 
 class Listener:
     def __init__(self):
-        #rospy.Subscriber('fsm_node/mode', FSMState, self.start_callback)
         rospy.Subscriber('apriltag_detector_node/detections', AprilTagDetectionArray, self.callback)
         self.t = Talker()
         self.running = False
         self.tag_detected = False
-        self.linear_controller = PIDController(0.5,0.1,0.1)
-        self.rotational_controller = PIDController(0.8,0.1,0.1)
-    
-    def start_callback(self, msg):
-        # check message for a mode switch
-        if not msg.state == 'LANE_FOLLOWING':
-            return
-        if self.running:
-            return
-        self.running = True
-
+        self.linear_controller = PIDController(0.7,0.2,0.2)
+        self.rotational_controller = PIDController(1.5,0.2,0.2)
     
     def callback(self, msg):
         move_cmd = Twist2DStamped()
         # check for an apriltag
         if msg.detections == []:
-            move_cmd.v = self.linear_controller.get_accel(0)
-            move_cmd.omega = self.rotational_controller.get_accel(0)
+            self.rotational_controller.reset()
+            self.linear_controller.reset()
+            move_cmd.v = 0
+            move_cmd.omega = 0
             self.t.talk(move_cmd)
             if self.tag_detected:
                 rospy.logwarn('no tag detected')
@@ -83,10 +80,9 @@ class Listener:
         transform = msg.detections[0].transform.translation
         error_input = transform.z - 0.1
         move_cmd.v = self.linear_controller.get_accel(error_input)
-        s = '\nInput: ' + str(transform.z) + '\nCommand: ' + str(move_cmd.v)
-        rospy.logwarn(s)
+        # s = '\nInput: ' + str(transform.z) + '\nCommand: ' + str(move_cmd.v)
+        # rospy.logwarn(s)
         # calculate rotational velocity with the rotational PID controller
-        transform = msg.detections[0].transform.translation
         error_input = -transform.x / transform.z
         move_cmd.omega = self.rotational_controller.get_accel(error_input)
         # publish the calculated velocities
