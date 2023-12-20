@@ -53,8 +53,8 @@ class Listener:
         self.t = Talker()
         self.running = False
         self.tag_detected = False
-        self.linear_controller = PIDController(1,0,0)
-        self.rotational_controller = PIDController(10,0,0)
+        self.linear_controller = PIDController(0.5,0.1,0.1)
+        self.rotational_controller = PIDController(0.8,0.1,0.1)
     
     def start_callback(self, msg):
         # check message for a mode switch
@@ -66,8 +66,12 @@ class Listener:
 
     
     def callback(self, msg):
+        move_cmd = Twist2DStamped()
         # check for an apriltag
         if msg.detections == []:
+            move_cmd.v = self.linear_controller.get_accel(0)
+            move_cmd.omega = self.rotational_controller.get_accel(0)
+            self.t.talk(move_cmd)
             if self.tag_detected:
                 rospy.logwarn('no tag detected')
                 self.tag_detected = False
@@ -75,12 +79,16 @@ class Listener:
         if not self.tag_detected:
             rospy.logwarn('tag detected')
             self.tag_detected = True
-        # calculate wheel velocities with the PID controllers
-        move_cmd = Twist2DStamped()
-        move_cmd.v = 0
-        move_cmd.omega = -self.rotational_controller.get_accel(msg.detections[0].transform.translation.x)
-        s = '\nInput: ' + str(msg.detections[0].transform.translation.x) + '\nCommand: ' + str(move_cmd.omega)
+        # calculate linear velocity with the linear PID controller
+        transform = msg.detections[0].transform.translation
+        error_input = transform.z - 0.1
+        move_cmd.v = self.linear_controller.get_accel(error_input)
+        s = '\nInput: ' + str(transform.z) + '\nCommand: ' + str(move_cmd.v)
         rospy.logwarn(s)
+        # calculate rotational velocity with the rotational PID controller
+        transform = msg.detections[0].transform.translation
+        error_input = -transform.x / transform.z
+        move_cmd.omega = self.rotational_controller.get_accel(error_input)
         # publish the calculated velocities
         self.t.talk(move_cmd)
 
